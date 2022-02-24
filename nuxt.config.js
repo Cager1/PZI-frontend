@@ -47,7 +47,7 @@ export default {
   },
 
   axios: {
-    baseURL: 'http://pzi022022.studenti.sumit.sum.ba/backend',
+    baseURL: 'http://pzi022022.studenti.sumit.sum.ba/backend/api',
   },
 
   auth: {
