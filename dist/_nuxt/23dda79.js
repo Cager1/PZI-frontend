@@ -1,1 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[25],{545:function(e,t,n){"use strict";n.r(t);var r={name:"register",auth:"guest"},o=n(65),component=Object(o.a)(r,(function(){var e=this.$createElement;return(this._self._c||e)("register-form")}),[],!1,null,"cd6d2fea",null);t.default=component.exports;installComponents(component,{RegisterForm:n(533).default})}}]);
