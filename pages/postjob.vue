@@ -1,5 +1,7 @@
 <template>
-  <job-form/>
+  <v-container>
+    <job-form/>
+  </v-container>
 </template>
 
 <script>

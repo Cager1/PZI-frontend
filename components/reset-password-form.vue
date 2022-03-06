@@ -97,7 +97,7 @@ export default {
   methods: {
 
     async resetPassword() {
-      await axios.post('http://127.0.0.1:8000/api/reset-password', this.user).then(response => {
+      await axios.post('http://pzi022022.studenti.sumit.sum.ba/backend/api/reset-password', this.user).then(response => {
         console.log(this.user);
       }).catch()
 

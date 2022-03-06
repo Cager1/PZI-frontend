@@ -1,67 +1,70 @@
 <template>
-  <v-card
-    elevation="24"
-    shaped
-    style="padding:20px;"
-  >
-    <v-card-title>Ulogiraj se</v-card-title>
-    <v-form
-      enctype="multipart/form-data"
-      @submit.prevent="login"
-      ref="form"
-      v-model="valid"
-      lazy-validation
+  <v-container>
+    <v-card
+      elevation="24"
+      shaped
+      style="padding:20px;"
     >
-      <v-text-field
-        v-model="user.email"
-        type="email"
-        name="email"
-        label="E-mail"
-        required
-      ></v-text-field>
+      <v-card-title>Ulogiraj se</v-card-title>
+      <ValidationObserver ref="observer" >
+        <v-form
+          enctype="multipart/form-data"
+          @submit.prevent="login"
+        >
+          <ValidationProvider
+            v-slot="{ errors }"
+            name="E-mail"
+            rules="required|email"
+          >
+            <v-text-field
+              v-model="user.email"
+              type="email"
+              :error-messages="errors"
+              label="E-mail"
+              required
+            ></v-text-field>
+          </ValidationProvider>
+          <ValidationProvider name="Zaporka" rules="min:6|required" v-slot="{ errors }">
+            <v-text-field
+              v-model="user.password"
+              type="password"
+              :error-messages="errors"
+              label="Zaporka"
+            ></v-text-field>
+          </ValidationProvider>
 
-      <v-text-field
-        v-model="user.password"
-        type="password"
-        name="Password"
-        label="Šifra"
-        required
-      ></v-text-field>
+          <v-btn
+            class="mr-4"
+            type="submit"
+          >
+            Prijavi se
+          </v-btn>
+          <v-btn @click="clear">
+            Očisti
+          </v-btn>
 
+          <v-divider style="margin-top: 20px; margin-bottom: 20px"></v-divider>
+          <nuxt-link to="/register">Registracija</nuxt-link>
+          <nuxt-link to="/forgot-password" class="float-right">Zaboravili ste šifru?</nuxt-link>
+        </v-form>
+      </ValidationObserver>
 
-      <v-checkbox
-        v-model="checkbox"
-        :rules="[v => !!v || 'Morate potvrditit kako bi nastavili']"
-        label="Da li potvrđujete?"
-        required
-      ></v-checkbox>
-      <v-btn
-        :disabled="!valid"
-        color="success"
-        class="mr-4"
-        @click="validate"
-        type="submit"
-      >
-        Potvrdi
-      </v-btn>
+    </v-card>
+    <v-snackbar outlined multi-line :color="color" v-model="snackbar" :timeout="timeout" content-class="text-center">
+      {{ message }}
+    </v-snackbar>
+  </v-container>
 
-      <v-btn
-        color="error"
-        class="mr-4"
-        @click="reset"
-      >
-        Resetiraj
-      </v-btn>
-
-      <v-divider></v-divider>
-      <nuxt-link to="/register">Registracija</nuxt-link>
-      <nuxt-link to="/forgot-password" class="float-right">Zaboravili ste šifru?</nuxt-link>
-    </v-form>
-  </v-card>
 </template>
 
 <script>
+import { ValidationObserver, ValidationProvider, setInteractionMode } from 'vee-validate'
+setInteractionMode('eager')
 export default {
+  components: {
+    ValidationObserver: ValidationObserver,
+    ValidationProvider: ValidationProvider
+  },
   name: "login-form",
   auth: 'guest',
   data: () => ({
@@ -71,8 +74,11 @@ export default {
       password: "",
     },
 
-    valid: true,
-    checkbox: false,
+    snackbar: false,
+    timeout: 2000,
+    message: '',
+    color: '',
+    errors: [],
   }),
 
   watch: {
@@ -81,6 +87,7 @@ export default {
 
   mounted() {
 
+    console.log(this.$refs.observer);
 
   },
 
@@ -90,21 +97,34 @@ export default {
     async login() {
       try {
         let response = await this.$auth.loginWith('local', {data: this.user});
+        console.log("Auth: ");
+        console.log(this.$auth);
+        console.log("Ulogiran");
         console.log(response);
       } catch (err) {
-        console.log(err);
+        console.log(err.response)
+        this.errors = err.response.data.errors;
+        console.log(this.errors);
+        console.log(this.$refs.observer);
+        for (const error in this.errors) {
+          this.errors[error][0]= this.errors[error][0].charAt(0).toUpperCase() + this.errors[error][0].slice(1);
+        }
+        for (const error in this.errors) {
+          this.$refs.observer.errors[error].push(this.errors[error][0]);
+        }
+        this.message = 'Prijava neuspješna';
+        this.color = 'error'
+        this.snackbar = true;
       }
     },
 
-    validate () {
-      this.$refs.form.validate()
-    },
-    reset () {
-      this.$refs.form.reset()
-    },
-    resetValidation () {
-      this.$refs.form.resetValidation()
-    },
+    clear() {
+      this.user.name = ''
+      this.user.email = ''
+      this.user.password = ''
+      this.user.password_confirmation = ''
+      this.$refs.observer.reset()
+    }
 
 
   },

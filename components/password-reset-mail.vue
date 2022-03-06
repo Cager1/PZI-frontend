@@ -31,7 +31,7 @@ export default {
 
   methods: {
     async password_reset() {
-      await axios.post('http://127.0.0.1:8000/api/forgot-password', this.user).then(response => {
+      await axios.post('http://pzi022022.studenti.sumit.sum.ba/backend/api/forgot-password', this.user).then(response => {
         console.log(response);
       }).catch(err => {
         console.log(err);

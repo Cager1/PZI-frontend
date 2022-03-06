@@ -25,6 +25,7 @@ export default {
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
+    "~/plugins/vee-validate.js"
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -76,16 +77,15 @@ export default {
   vuetify: {
     customVariables: ['~/assets/variables.scss'],
     theme: {
-      dark: true,
       themes: {
-        dark: {
-          primary: colors.blue.darken2,
-          accent: colors.grey.darken3,
-          secondary: colors.amber.darken3,
-          info: colors.teal.lighten1,
-          warning: colors.amber.base,
-          error: colors.deepOrange.accent4,
-          success: colors.green.accent3
+        light: {
+          primary: "#e86913",
+          secondary: "#ecdfdb",
+          accent: "#673ab7",
+          error: "#f44336",
+          warning: "#e91e63",
+          info: "#3f51b5",
+          success: "#4caf50"
         }
       }
     }
@@ -95,5 +95,6 @@ export default {
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
+    transpile: ["vee-validate/dist/rules"],
   }
 }

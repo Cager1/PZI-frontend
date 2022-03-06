@@ -1,8 +1,9 @@
 <template>
-  <div>
+  <v-container>
     <users-table/>
     <roles-table/>
-  </div>
+    <jobs-table/>
+  </v-container>
 
 </template>
 
@@ -25,5 +26,7 @@ export default {
 </script>
 
 <style scoped>
-
+td {
+  background-color: #3f51b5;
+}
 </style>

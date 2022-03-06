@@ -1,5 +1,7 @@
 <template>
-  <password-reset-mail/>
+  <v-container>
+    <password-reset-mail/>
+  </v-container>
 </template>
 
 <script>
