@@ -100,99 +100,115 @@
           </nuxt-link>
         </v-col>
         <v-spacer class="d-none d-md-flex"></v-spacer>
-
-        <span class="d-none d-md-inline" v-if="$auth.$state.loggedIn" >
-          <nuxt-link class="float-end" style="text-decoration: none;" to="/admin/manager">
-            <v-btn
-              color="secondary"
-              text
-            >Admin</v-btn>
-          </nuxt-link>
-        </span>
-
-        <span v-if="$auth.$state.loggedIn">
-          <span class="d-none d-md-inline" v-if="$auth.$state.user.role_id === 1 || $auth.$state.user.role_id === 2">
-            <nuxt-link class="float-end" style="text-decoration: none;" to="/postjob" >
+        <client-only>
+          <span class="d-none d-md-inline" v-if="$auth.$state.loggedIn" >
+            <nuxt-link class="float-end" style="text-decoration: none;" to="/admin/manager">
               <v-btn
-                text
                 color="secondary"
-              >Objavi Posao</v-btn>
-            </nuxt-link>
-            <nuxt-link class="float-end" style="text-decoration: none;" to="/my-jobs" >
-              <v-btn
                 text
-                color="secondary"
-              >Moji Poslovi</v-btn>
+              >Admin
+              </v-btn>
             </nuxt-link>
+          </span>
+        </client-only>
 
+        <client-only>
+          <span v-if="$auth.$state.loggedIn">
+            <client-only>
+              <span class="d-none d-md-inline" v-if="$auth.$state.user.role_id === 1 || $auth.$state.user.role_id === 2">
+                <nuxt-link class="float-end" style="text-decoration: none;" to="/postjob" >
+                  <v-btn
+                    text
+                    color="secondary"
+                  >Objavi Posao</v-btn>
+                </nuxt-link>
+                <nuxt-link class="float-end" style="text-decoration: none;" to="/my-jobs" >
+                  <v-btn
+                    text
+                    color="secondary"
+                  >Moji Poslovi</v-btn>
+                </nuxt-link>
+              </span>
+            </client-only>
         </span>
-        </span>
+        </client-only>
 
       </v-row>
-      <v-menu
-        v-if="$auth.$state.loggedIn"
-        v-model="menu"
-        :close-on-content-click="false"
-        :nudge-width="200"
-        offset-y
-        style="margin-left: auto"
-      >
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn
-            v-bind="attrs"
-            v-on="on"
-            text
-          >
-            <v-icon>
-              mdi-account
-            </v-icon>
-          </v-btn>
+      <client-only>
+        <v-menu
+          v-if="$auth.$state.loggedIn"
+          v-model="menu"
+          :close-on-content-click="false"
+          :nudge-width="200"
+          offset-y
+          style="margin-left: auto"
+        >
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              v-bind="attrs"
+              v-on="on"
+              text
+            >
+              <v-icon>
+                mdi-account
+              </v-icon>
+            </v-btn>
 
-        </template>
+          </template>
 
-        <v-card>
-          <v-list>
+          <v-card>
+            <v-list>
             <span>
               <v-card-text class="d-inline">
-                {{ $auth.$state.user.name}}
+                <client-only>
+                  {{ $auth.$state.user.name}}
+                </client-only>
               </v-card-text>
 
             </span>
-            <span class="float-end">
+              <span class="float-end">
               <v-card-text class="d-inline">
-                {{ $auth.$state.user.role.name }}
+                <client-only>
+                  {{ $auth.$state.user.role.name }}
+                </client-only>
+
               </v-card-text>
             </span>
-          </v-list>
+            </v-list>
 
-          <v-divider></v-divider>
+            <v-divider></v-divider>
 
-          <v-card-actions>
-            <v-btn text @click="$auth.logout(); menu = false;">Odjavite se</v-btn>
-            <v-spacer></v-spacer>
-            <v-btn
-              text
-              @click="menu = false"
-            >
-              Izađi
-            </v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-menu>
-      <span class="float-end" v-if="!$auth.$state.loggedIn">
-          <nuxt-link to="/login" style="text-decoration: none;">
-            <v-btn
-              text
-              color="secondary"
-            >Prijava</v-btn>
-          </nuxt-link>
-          <nuxt-link to="/register" style="text-decoration: none;">
-            <v-btn
-              text
-              color="secondary"
-            >Registracija</v-btn>
-          </nuxt-link>
-        </span>
+            <v-card-actions>
+              <v-btn text @click="$auth.logout(); menu = false;">Odjavite se</v-btn>
+              <v-spacer></v-spacer>
+              <v-btn
+                text
+                @click="menu = false"
+              >
+                Izađi
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-menu>
+      </client-only>
+
+      <client-only>
+        <span class="float-end" v-if="!$auth.$state.loggedIn">
+        <nuxt-link to="/login" style="text-decoration: none;">
+          <v-btn
+            text
+            color="secondary"
+          >Prijava</v-btn>
+        </nuxt-link>
+        <nuxt-link to="/register" style="text-decoration: none;">
+          <v-btn
+            text
+            color="secondary"
+          >Registracija</v-btn>
+        </nuxt-link>
+      </span>
+      </client-only>
+
 
     </v-app-bar>
     <v-main>
