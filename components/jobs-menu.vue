@@ -221,9 +221,9 @@ export default {
     async getJobs() {
 
       let jobs;
-      await axios.get('http://pzi022022.studenti.sumit.sum.ba/backend/api/jobs').then(response => {
-        jobs = response.data;
-        console.log(response.data);
+      await this.$axios.$get('/jobs').then(response => {
+        jobs = response;
+        console.log(response);
       }).catch((err) => {
         console.log(err);
       });

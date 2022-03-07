@@ -46,7 +46,10 @@ export default {
     middleware: ['auth']
   },
 
+
   axios: {
+
+    // http://pzi022022.studenti.sumit.sum.ba/backend/api PRODUCTION
     baseURL: 'http://pzi022022.studenti.sumit.sum.ba/backend/api',
   },
 

@@ -245,8 +245,8 @@ export default {
     async getJobs() {
       this.items = [];
       let jobs;
-      await axios.get("http://pzi022022.studenti.sumit.sum.ba/backend/api/user/" + this.$auth.$state.user.id).then(response => {
-        jobs = response.data.jobs;
+      await this.$axios.$get("/user/" + this.$auth.$state.user.id).then(response => {
+        jobs = response.jobs;
       })
       const user = this.$auth.$state.user;
       console.log("Jobs: ");
@@ -254,8 +254,8 @@ export default {
       for (let i = 0; i < jobs.length; i++) {
         let id = jobs[i].id
         let serv;
-        await axios.get('http://pzi022022.studenti.sumit.sum.ba/backend/api/job/' + id).then(response => {
-          serv = response.data.services;
+        await this.$axios.$get('/job/' + id).then(response => {
+          serv = response.services;
           console.log(serv);
         }).catch((err) => {
           console.log(err);
@@ -283,14 +283,14 @@ export default {
         }
       };
       console.log(item);
-      await axios.delete('http://pzi022022.studenti.sumit.sum.ba/backend/api/job/' + item.id, config).then(response => {
-        this.message = response.data.message;
+      await this.$axios.$delete('/job/' + item.id, config).then(response => {
+        this.message = response.message;
         this.color = 'success'
         this.snackbar = true;
         this.getJobs();
       }).catch((err) => {
         console.log(err.response);
-        this.message = err.response.data.message;
+        this.message = err.response.message;
         this.color = 'error'
         this.snackbar = true;
       });

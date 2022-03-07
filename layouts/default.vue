@@ -50,7 +50,7 @@
                 </v-list-item>
                 <v-divider></v-divider>
                 <div v-if="$auth.$state.loggedIn">
-                  <v-list-item class="d-md-none">
+                  <v-list-item class="d-md-none" v-if="$auth.$state.user.role_id === 1">
                     <v-list-item-action>
                       <nuxt-link class="float-end" style="text-decoration: none;" to="/admin/manager">
                         <v-btn
@@ -102,7 +102,7 @@
         <v-spacer class="d-none d-md-flex"></v-spacer>
         <client-only>
           <span class="d-none d-md-inline" v-if="$auth.$state.loggedIn" >
-            <nuxt-link class="float-end" style="text-decoration: none;" to="/admin/manager">
+            <nuxt-link class="float-end" style="text-decoration: none;" to="/admin/manager" v-if="$auth.$state.user.role_id === 1">
               <v-btn
                 color="secondary"
                 text

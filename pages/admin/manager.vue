@@ -10,10 +10,12 @@
 <script>
 import Create from "@/components/roles-crud/create-role";
 import CreateRole from "@/components/roles-crud/create-role";
-import RolesTable from "@/components/roles-crud/roles-table";
+import RolesTable from "@/components/admin/roles-table";
+import UsersTable from "@/components/admin/users-table";
+import JobsTable from "@/components/admin/jobs-table";
 export default {
   name: "manager",
-  components: {RolesTable, CreateRole, Create},
+  components: {JobsTable, UsersTable, RolesTable, CreateRole, Create},
   middleware({ redirect, $auth }) {
 
     const role = $auth.$state.user.role_id;

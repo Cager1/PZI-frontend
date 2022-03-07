@@ -6,7 +6,7 @@
   >
     <v-card-title>Registracija</v-card-title>
     <ValidationObserver
-      ref="observer" v-slot="{ invalid }"
+      ref="observer"
     >
       <v-form
         enctype="multipart/form-data"
@@ -61,12 +61,23 @@
         <v-btn
           class="mr-4"
           type="submit"
-          :disabled="invalid"
+          text
+          color="primary"
+          @click="role = 1"
         >
-          submit
+          Registriraj Korisnika
         </v-btn>
-        <v-btn @click="clear">
-          clear
+        <v-btn
+          class="mr-4"
+          type="submit"
+          text
+          color="primary"
+          @click="role = 2"
+        >
+          Registriraj Servisera
+        </v-btn>
+        <v-btn @click="clear" text color="primary">
+          Očisti
         </v-btn>
       </v-form>
     </ValidationObserver>
@@ -76,6 +87,8 @@
     </v-snackbar>
 
   </v-card>
+
+
 </template>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 <script>
@@ -100,6 +113,8 @@ export default {
       password_confirmation: "",
     },
 
+    role: 1,
+
     snackbar: false,
     timeout: 2000,
     message: '',
@@ -113,35 +128,56 @@ export default {
 
   mounted() {
 
-
+  console.log(this.$axios)
   },
 
 
   methods: {
 
     async register() {
-      await axios.post('http://pzi022022.studenti.sumit.sum.ba/backend/api/register', this.user).then(response => {
-        console.log(response);
-        this.message = 'Uspiješna registracija';
-        this.color = 'success';
-        this.snackbar = true;
-        setTimeout(()=>{
-          this.$router.push("/login")
-        }, 2000)
-      }).catch((err) => {
-        console.log(err.response)
-        this.errors = err.response.data.errors;
-        console.log(this.errors);
-        for (const error in this.errors) {
-          this.errors[error][0]= this.errors[error][0].charAt(0).toUpperCase() + this.errors[error][0].slice(1);
-        }
-        for (const error in this.errors) {
-          this.$refs.observer.errors[error].push(this.errors[error][0]);
-        }
-        this.message = 'Registracija neuspješna';
-        this.color = 'error'
-        this.snackbar = true;
-      })
+      if (this.role === 1) {
+        await this.$axios.$post('/register', this.user).then(response => {
+          console.log(response);
+          this.message = 'Uspiješna registracija Korisnika';
+          this.color = 'success';
+          this.snackbar = true;
+          setTimeout(()=>{
+            this.$router.push("/login")
+          }, 2000)
+        }).catch((err) => {
+          console.log(err.response)
+          this.errors = err.response.errors;
+          console.log(this.errors);
+          for (const error in this.errors) {
+            this.errors[error][0]= this.errors[error][0].charAt(0).toUpperCase() + this.errors[error][0].slice(1);
+          }
+          this.message = 'Registracija neuspješna';
+          this.color = 'error'
+          this.snackbar = true;
+        })
+      } else if (this.role === 2) {
+        this.user.role_id = 2;
+        await this.$axios.$post('/register', this.user).then(response => {
+          console.log(response);
+          this.message = 'Uspiješna registracija Servisera';
+          this.color = 'success';
+          this.snackbar = true;
+          setTimeout(()=>{
+            this.$router.push("/login")
+          }, 2000)
+        }).catch((err) => {
+          console.log(err.response)
+          this.errors = err.response.errors;
+          console.log(this.errors);
+          for (const error in this.errors) {
+            this.errors[error][0]= this.errors[error][0].charAt(0).toUpperCase() + this.errors[error][0].slice(1);
+          }
+          this.message = 'Registracija neuspješna';
+          this.color = 'error'
+          this.snackbar = true;
+        })
+      }
+
     },
 
     clear() {

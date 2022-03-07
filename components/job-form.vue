@@ -40,7 +40,6 @@
           ></v-textarea>
         </ValidationProvider>
 
-
         <template>
           <v-treeview
             :items="services"
@@ -51,10 +50,6 @@
             open-on-click
           ></v-treeview>
         </template>
-
-
-
-
         <v-btn
           class="mr-4"
           type="submit"
@@ -120,8 +115,8 @@ export default {
   methods: {
 
     async getServices() {
-      await axios.get('http://pzi022022.studenti.sumit.sum.ba/backend/api/services', this.config).then(response => {
-        this.services = response.data;
+      await this.$axios.$get('/services', this.config).then(response => {
+        this.services = response;
       }).catch(err => {
         console.log(err);
       })
@@ -129,7 +124,7 @@ export default {
 
     async publishJob() {
       this.job.service_id = 37;
-      await axios.post('http://pzi022022.studenti.sumit.sum.ba/backend/api/job', this.job, this.config).then(response => {
+      await this.$axios.$post('/job', this.job, this.config).then(response => {
         console.log(response);
         this.message = 'Posao uspiješno objavljen.';
         this.color = 'success';
@@ -137,7 +132,7 @@ export default {
         this.clear();
       }).catch(err => {
         console.log(err.response)
-        this.errors = err.response.data.errors;
+        this.errors = err.response.errors;
         console.log(this.errors);
         for (const error in this.errors) {
           this.errors[error][0]= this.errors[error][0].charAt(0).toUpperCase() + this.errors[error][0].slice(1);

@@ -3,8 +3,10 @@
 </template>
 
 <script>
+import ResetPasswordForm from "@/components/password-reset/reset-password-form";
 export default {
   name: "reset-password",
+  components: {ResetPasswordForm},
   auth: 'guest',
   data: () => ({
     token: "",

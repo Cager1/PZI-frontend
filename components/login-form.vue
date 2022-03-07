@@ -24,7 +24,7 @@
               required
             ></v-text-field>
           </ValidationProvider>
-          <ValidationProvider name="Zaporka" rules="min:6|required" v-slot="{ errors }">
+          <ValidationProvider name="password" rules="min:6|required" v-slot="{ errors }">
             <v-text-field
               v-model="user.password"
               type="password"
@@ -103,7 +103,7 @@ export default {
         console.log(response);
       } catch (err) {
         console.log(err.response)
-        this.errors = err.response.data.errors;
+        this.errors = err.response.errors;
         console.log(this.errors);
         console.log(this.$refs.observer);
         for (const error in this.errors) {

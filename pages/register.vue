@@ -1,6 +1,8 @@
 <template>
   <v-container>
+
     <register-form/>
+
   </v-container>
 </template>
 
@@ -13,4 +15,10 @@ export default {
 
 <style scoped>
 
+#cen {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+}
 </style>
