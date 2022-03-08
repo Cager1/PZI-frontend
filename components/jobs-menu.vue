@@ -195,11 +195,12 @@ export default {
       itemsPerPageArray: [4, 8, 12],
       search: '',
       filter: {},
-      sortDesc: false,
+      sortDesc: true,
       page: 1,
       itemsPerPage: 8,
-      sortBy: 'name',
+      sortBy: 'Datum',
       keys: [
+
         'Datum',
       ],
       items: [
