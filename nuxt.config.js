@@ -48,9 +48,9 @@ export default {
 
 
   axios: {
-
+    // http://127.0.0.1:8000/api LOCAL
     // http://pzi022022.studenti.sumit.sum.ba/backend/api PRODUCTION
-    baseURL: 'http://127.0.0.1:8000/api',
+    baseURL: 'http://pzi022022.studenti.sumit.sum.ba/backend/api',
   },
 
   auth: {

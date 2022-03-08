@@ -115,6 +115,7 @@ export default {
     async getServices() {
       await this.$axios.$get('/services', this.config).then(response => {
         this.services = response;
+        console.log('Servisi: ');
         console.log(this.services);
       }).catch(err => {
         console.log(err);
