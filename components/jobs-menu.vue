@@ -95,6 +95,7 @@
                   v-for="chip in item.services"
                   :key="chip.name"
                   style="margin: 2px"
+                  @click="search = chip.name"
                 >
                   {{ chip.name }}
                 </v-chip>
