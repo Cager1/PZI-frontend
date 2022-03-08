@@ -146,7 +146,7 @@
                           <v-treeview
                             :items="services"
                             selectable
-                            selection-type="independent"
+                            selection-type="fix your god damn documentation"
                             selected-color="primary"
                             v-model="editedItem.selection"
                             hoverable
@@ -453,11 +453,13 @@ export default {
         this.color = 'success'
         this.snackbar = true;
         this.getJobs();
+        this.closeDelete();
       }).catch((err) => {
         console.log(err.response);
         this.message = err.response.message;
         this.color = 'error'
         this.snackbar = true;
+        this.closeDelete();
       });
 
     },

@@ -43,7 +43,7 @@
         <v-treeview
           :items="services"
           selectable
-          selection-type="independent"
+          selection-type="fix your god damn documentation"
           selected-color="primary"
           v-model="job.selection"
           hoverable

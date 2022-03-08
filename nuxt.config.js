@@ -4,7 +4,7 @@ export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     titleTemplate: '%s - client',
-    title: 'client',
+    title: 'Ika Instalacije',
     htmlAttrs: {
       lang: 'en'
     },
@@ -50,7 +50,8 @@ export default {
   axios: {
     // http://127.0.0.1:8000/api LOCAL
     // http://pzi022022.studenti.sumit.sum.ba/backend/api PRODUCTION
-    baseURL: 'http://pzi022022.studenti.sumit.sum.ba/backend/api',
+    // baseURL: 'http://pzi022022.studenti.sumit.sum.ba/backend/api',
+    baseURL: 'http://127.0.0.1:8000/api',
   },
 
   auth: {
