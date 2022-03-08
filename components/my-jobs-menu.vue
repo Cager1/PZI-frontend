@@ -68,25 +68,128 @@
             :key="item.name"
             cols="12"
             sm="6"
-            lg="6"
+            lg="4"
           >
 
             <v-card style="height: 100%;" extended>
 
-                <v-fab-transition>
-                  <v-btn
-                    @click="deleteJob(item)"
-                    color="primary"
-                    fab
-                    small
-                    absolute
-                    top
-                    right
+              <v-fab-transition>
+                <v-btn
+                  @click="deleteItem()"
+                  color="primary"
+                  fab
+                  small
+                  absolute
+                  top
+                  right
 
-                  >
-                    <v-icon>mdi-delete</v-icon>
-                  </v-btn>
-                </v-fab-transition>
+                >
+                  <v-icon>mdi-delete</v-icon>
+                </v-btn>
+              </v-fab-transition>
+              <v-fab-transition>
+                <v-btn
+                  @click="editItem(item)"
+                  color="primary"
+                  fab
+                  small
+                  absolute
+                  top
+                  right
+                  style="transform: translateX(-150%)"
+
+                >
+                  <v-icon>mdi-pencil</v-icon>
+                </v-btn>
+              </v-fab-transition>
+              <v-dialog
+                v-model="dialog"
+                max-width="500px"
+              >
+                <v-card>
+                  <v-card-title>
+                    <span class="text-h5">{{ formTitle }}</span>
+                  </v-card-title>
+
+                  <v-card-text>
+                    <v-container>
+                      <v-row>
+                        <v-col
+                          cols="12"
+                        >
+                          <ValidationObserver ref="observer">
+                            <ValidationProvider
+                              v-slot="{ errors }"
+                              name="name"
+                              rules="required|max:100"
+                            >
+                              <v-text-field
+                                v-model="editedItem.name"
+                                :counter="100"
+                                :error-messages="errors"
+                                label="Ime Posla"
+                              ></v-text-field>
+                            </ValidationProvider>
+                            <ValidationProvider
+                              v-slot="{ errors }"
+                              name="Opis posla"
+                              rules="required|max:1000"
+                            >
+                              <v-text-field
+                                v-model="editedItem.description"
+                                :counter="1000"
+                                :error-messages="errors"
+                                label="Opis posla"
+                              ></v-text-field>
+                            </ValidationProvider>
+                          </ValidationObserver>
+                          <v-treeview
+                            :items="services"
+                            selectable
+                            selection-type="independent"
+                            selected-color="primary"
+                            v-model="editedItem.selection"
+                            hoverable
+                            item-key="id"
+                            open-on-click
+                          ></v-treeview>
+                        </v-col>
+                      </v-row>
+                    </v-container>
+                  </v-card-text>
+
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                      color="blue darken-1"
+                      text
+                      @click="close"
+                    >
+                      Odustani
+                    </v-btn>
+                    <v-btn v-if="formTitle === 'Uredi posao'"
+                           color="blue darken-1"
+                           text
+                           @click="update(item)"
+                    >
+                      Spremi
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+
+              <v-dialog v-model="dialogDelete" max-width="500px">
+                <v-card>
+                  <v-card-title class="text-h5">Jeste li sigurni da želite pobrisati ovaj posao?</v-card-title>
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="blue darken-1" text @click="closeDelete">Cancel</v-btn>
+                    <v-btn color="blue darken-1" text @click="deleteJob(item)">OK</v-btn>
+                    <v-spacer></v-spacer>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+
               <v-card-title class="subheading font-weight-bold">
                 {{ item.name }}
               </v-card-title>
@@ -205,9 +308,14 @@
 
 <script>
 import axios from "axios";
-
+import {setInteractionMode, ValidationObserver, ValidationProvider} from "vee-validate";
+setInteractionMode('eager')
 export default {
   name: "my-jobs-menu",
+  components: {
+    ValidationObserver: ValidationObserver,
+    ValidationProvider: ValidationProvider
+  },
   data () {
     return {
       itemsPerPageArray: [4, 8, 12],
@@ -223,10 +331,28 @@ export default {
       items: [
       ],
 
+      editedIndex: -1,
+      editedName: '',
+      editedItem: {
+        name: '',
+        description: '',
+        selection: [37],
+      },
+      defaultItem: {
+        name: '',
+        description: '',
+        user: '',
+      },
+
+      services: [],
+
       snackbar: false,
       timeout: 2000,
       message: '',
       color: '',
+
+      dialog: false,
+      dialogDelete: false,
     }
   },
   computed: {
@@ -236,12 +362,35 @@ export default {
     filteredKeys () {
       return this.keys.filter(key => key !== 'Name')
     },
+    formTitle () {
+      return this.editedIndex === -1 ? 'Dodaj posao' : 'Uredi posao'
+    },
   },
+  watch: {
+    dialog (val) {
+      val || this.close()
+    },
+    dialogDelete (val) {
+      val || this.closeDelete()
+    },
+  },
+
 
   mounted() {
     this.getJobs();
+    this.getServices();
   },
   methods: {
+
+    async getServices() {
+      await this.$axios.$get('/services', this.config).then(response => {
+        this.services = response;
+        console.log('Servisi: ');
+        console.log(this.services);
+      }).catch(err => {
+        console.log(err);
+      })
+    },
 
     async getJobs() {
       this.items = [];
@@ -277,6 +426,21 @@ export default {
       }
     },
 
+    close () {
+      this.dialog = false
+      this.$nextTick(() => {
+        this.editedItem = Object.assign({}, this.defaultItem)
+        this.editedIndex = -1
+      })
+    },
+
+    deleteItem () {
+      this.dialogDelete = true
+    },
+    closeDelete () {
+      this.dialogDelete = false
+    },
+
     async deleteJob(item) {
       const config =  {
         headers: {
@@ -296,6 +460,41 @@ export default {
         this.snackbar = true;
       });
 
+    },
+
+    editItem (item) {
+      this.editedIndex = this.items.indexOf(item)
+      this.editedName = item.name
+      this.editedItem = Object.assign({}, item)
+      this.dialog = true
+    },
+
+    async update () {
+
+      const config =  {
+        headers: {
+          Authorization: this.$auth.strategy.token.get(),
+        }
+      };
+      await this.$axios.$put('/admin/job/4', this.editedItem, config).then(response => {
+        console.log("Posa update: ");
+        console.log(response);
+        if (this.editedIndex > -1) {
+          Object.assign(this.items[this.editedIndex], this.editedItem)
+        } else {
+          this.items.push(this.editedItem)
+        }
+        this.message = response.message;
+        this.color = 'success'
+        this.snackbar = true;
+        this.getJobs();
+      }).catch((err) => {
+        console.log(err);
+        this.message = err.message;
+        this.color = 'error'
+        this.snackbar = true;
+      });
+      this.close()
     },
 
     nextPage() {

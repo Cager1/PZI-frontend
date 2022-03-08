@@ -43,6 +43,8 @@
         <v-treeview
           :items="services"
           selectable
+          selection-type="independent"
+          selected-color="primary"
           v-model="job.selection"
           hoverable
           item-key="id"
@@ -123,7 +125,6 @@ export default {
     },
 
     async publishJob() {
-      this.job.service_id = 37;
       await this.$axios.$post('/job', this.job, this.config).then(response => {
         console.log(response);
         this.message = 'Posao uspiješno objavljen.';

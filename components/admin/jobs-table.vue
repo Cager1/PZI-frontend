@@ -42,13 +42,11 @@
                   <v-row>
                     <v-col
                       cols="12"
-                      sm="6"
-                      md="4"
                     >
                       <ValidationObserver ref="observer">
                         <ValidationProvider
                           v-slot="{ errors }"
-                          name="Ime posla"
+                          name="name"
                           rules="required|max:100"
                         >
                           <v-text-field
@@ -70,9 +68,17 @@
                             label="Opis posla"
                           ></v-text-field>
                         </ValidationProvider>
-
                       </ValidationObserver>
-
+                      <v-treeview
+                        :items="services"
+                        selectable
+                        selection-type="independent"
+                        selected-color="primary"
+                        v-model="editedItem.selection"
+                        hoverable
+                        item-key="id"
+                        open-on-click
+                      ></v-treeview>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -99,7 +105,7 @@
           </v-dialog>
           <v-dialog v-model="dialogDelete" max-width="500px">
             <v-card>
-              <v-card-title class="text-h5">Are you sure you want to delete this item?</v-card-title>
+              <v-card-title class="text-h5">Jeste li sigurni da želite pobrisati ovaj posao?</v-card-title>
               <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn color="blue darken-1" text @click="closeDelete">Cancel</v-btn>
@@ -147,13 +153,13 @@ import {setInteractionMode, ValidationObserver, ValidationProvider} from "vee-va
 setInteractionMode('eager')
 export default {
   name: "jobs-table",
+  components: {
+    ValidationObserver: ValidationObserver,
+    ValidationProvider: ValidationProvider
+  },
   data: () => ({
     dialog: false,
     dialogDelete: false,
-    components: {
-      ValidationObserver: ValidationObserver,
-      ValidationProvider: ValidationProvider
-    },
 
     search: '',
     headers: [
@@ -173,6 +179,7 @@ export default {
     editedItem: {
       name: '',
       description: '',
+      selection: [],
     },
     defaultItem: {
       name: '',
@@ -184,10 +191,13 @@ export default {
     timeout: 2000,
     message: '',
     color: '',
+
+    services: [],
   }),
 
   mounted() {
     this.getJobs();
+    this.getServices();
   },
 
   computed: {
@@ -206,6 +216,15 @@ export default {
   },
 
   methods: {
+    async getServices() {
+      await this.$axios.$get('/services', this.config).then(response => {
+        this.services = response;
+        console.log('Servisi: ');
+        console.log(this.services);
+      }).catch(err => {
+        console.log(err);
+      })
+    },
     async getJobs() {
       const config = {
         headers: {
@@ -317,6 +336,7 @@ export default {
         }
       };
       await this.$axios.$put('/admin/job/' + this.editedItem.ID, this.editedItem, config).then(response => {
+        console.log("Posa update: ");
         console.log(response);
         if (this.editedIndex > -1) {
           Object.assign(this.items[this.editedIndex], this.editedItem)
