@@ -40,16 +40,14 @@
           ></v-textarea>
         </ValidationProvider>
 
-        <template>
-          <v-treeview
-            :items="services"
-            selectable
-            v-model="job.selection"
-            hoverable
-            item-key="id"
-            open-on-click
-          ></v-treeview>
-        </template>
+        <v-treeview
+          :items="services"
+          selectable
+          v-model="job.selection"
+          hoverable
+          item-key="id"
+          open-on-click
+        ></v-treeview>
         <v-btn
           class="mr-4"
           type="submit"
@@ -117,6 +115,7 @@ export default {
     async getServices() {
       await this.$axios.$get('/services', this.config).then(response => {
         this.services = response;
+        console.log(this.services);
       }).catch(err => {
         console.log(err);
       })

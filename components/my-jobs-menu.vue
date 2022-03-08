@@ -98,7 +98,8 @@
               </v-card-text>
 
               <v-card-subtitle>
-                {{ item.user.name }}
+                {{ item.user.name }} <br>
+                {{ item.user.email }}
               </v-card-subtitle>
               <v-card-subtitle>
                 {{ item.datum }}
